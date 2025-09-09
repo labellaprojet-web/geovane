@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Produtos">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#4A90E2">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlByb2R1dG9zIFF1w61taWNvcyIsCiAgInNob3J0X25hbWUiOiAiUHJvZHV0b3MiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2ZmZmZmZiIsCiAgInRoZW1lX2NvbG9yIjogIiM0QTkwRTIiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIKfQ==">
+    
+    <!-- iOS Icon -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBmaWxsPSIjNEE5MEUyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iI0ZGRiIvPjx0ZXh0IHg9IjI1NiIgeT0iMzIwIiBmb250LXNpemU9IjI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+TpjwvdGV4dD48L3N2Zz4=">
+    
+    <title>Produtos Químicos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        input {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: #F2F2F7;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        .app {
+            height: 100%;
+            height: -webkit-fill-available;
+            display: flex;
+            flex-direction: column;
+            background: #F2F2F7;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+            padding-top: env(safe-area-inset-top, 44px);
+            padding-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            position: relative;
+            z-index: 100;
+        }
+
+        .header-content {
+            padding: 0 20px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 34px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .header-subtitle {
+            font-size: 15px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+
+        /* Card Container */
+        .card {
+            background: white;
+            margin: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: #FAFAFA;
+            padding: 12px 16px;
+            border-bottom: 1px solid #E5E5EA;
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #8E8E93;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 15px;
+            color: #3C3C43;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #C6C6C8;
+            border-radius: 10px;
+            font-size: 17px;
+            background: #FFFFFF;
+            transition: all 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4A90E2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #C7C7CC;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .btn-secondary {
+            background: #E5E5EA;
+            color: #3C3C43;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: white;
+            margin: 16px;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #4A90E2;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #8E8E93;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* Search Bar */
+        .search-container {
+            padding: 0 16px 8px;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8E8E93;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            border: none;
+            border-radius: 10px;
+            background: #F2F2F7;
+            font-size: 16px;
+            -webkit-appearance: none;
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: #E5E5EA;
+        }
+
+        /* Product List */
+        .product-list {
+            padding: 0 16px 16px;
+        }
+
+        .product-item {
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            transition: all 0.2s;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-item:active {
+            transform: scale(0.98);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 4px;
+        }
+
+        .product-details {
+            display: flex;
+            gap: 12px;
+            font-size: 13px;
+            color: #8E8E93;
+        }
+
+        .product-lote {
+            font-weight: 500;
+        }
+
+        .delete-btn {
+            background: #FF3B30;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:active {
+            transform: scale(0.95);
+            background: #D70015;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #8E8E93;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #3C3C43;
+        }
+
+        .empty-subtitle {
+            font-size: 15px;
+            color: #8E8E93;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: calc(100px + env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: #E5E5EA;
+            margin: 16px 0;
+        }
+
+        /* iOS Safe Areas */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .main-content {
+                padding-bottom: calc(20px + env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Small devices adjustments */
+        @media (max-width: 375px) {
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .stat-value {
+                font-size: 24px;
+            }
+            
+            .card {
+                margin: 12px;
+            }
+        }
+
+        /* Landscape adjustments */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .header {
+                padding-top: 20px;
+                padding-bottom: 10px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .stats-bar {
+                margin: 8px 16px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>Produtos Químicos</h1>
+                <div class="header-subtitle">Sistema de Cadastro</div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- Form Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Novo Cadastro</div>
+                </div>
+                <div class="card-body">
+                    <form id="productForm">
+                        <div class="form-group">
+                            <label class="form-label">Nome do Produto</label>
+                            <input type="text" 
+                                   class="form-input" 
+                                   id="nome" 
+                                   required 
+                                   placeholder="Ex: Ácido Sulfúrico"
+                                   autocomplete="off"
+                                   autocorrect="off"
+                                   autocapitalize="words">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Lote</label>
+                            <input type="text" 
+                                   class="form-input" 
+                                   id="lote" 
+                                   required 
+                                   placeholder="Ex: LT2024001"
+                                   autocomplete="off"
+                                   autocorrect="off"
+                                   autocapitalize="characters">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <span>➕</span>
+                            <span>Adicionar Produto</span>
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                            <span>🔄</span>
+                            <span>Limpar Campos</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalCount">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="todayCount">0</div>
+                    <div class="stat-label">Hoje</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="lotesCount">0</div>
+                    <div class="stat-label">Lotes</div>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Produtos Cadastrados</div>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <div class="search-bar">
+                        <span class="search-icon">🔍</span>
+                        <input type="search" 
+                               class="search-input" 
+                               id="searchInput" 
+                               placeholder="Buscar produto ou lote..."
+                               autocomplete="off">
+                    </div>
+                </div>
+
+                <!-- Product List -->
+                <div class="product-list" id="productList">
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <div class="empty-title">Nenhum produto cadastrado</div>
+                        <div class="empty-subtitle">Adicione seu primeiro produto acima</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // PWA Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:text/javascript,' + encodeURIComponent(`
+                self.addEventListener('install', e => {
+                    self.skipWaiting();
+                });
+                self.addEventListener('activate', e => {
+                    e.waitUntil(clients.claim());
+                });
+                self.addEventListener('fetch', e => {
+                    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+                });
+            `)).catch(err => console.log('SW registration failed'));
+        }
+
+        // App State
+        let products = JSON.parse(localStorage.getItem('chemicalProductsApp')) || [];
+        let productIdCounter = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+
+        // Vibration feedback
+        function vibrate(duration = 10) {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(duration);
+            }
+        }
+
+        // Show toast notification
+        function showToast(message, duration = 2500) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        // Clear form
+        function clearForm() {
+            vibrate();
+            document.getElementById('productForm').reset();
+            document.getElementById('nome').focus();
+            showToast('📝 Formulário limpo');
+        }
+
+        // Format date
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: '2-digit'
+            });
+        }
+
+        // Update statistics
+        function updateStats() {
+            // Total products
+            document.getElementById('totalCount').textContent = products.length;
+            
+            // Today's products
+            const today = new Date().toDateString();
+            const todayProducts = products.filter(p => 
+                new Date(p.dataCadastro).toDateString() === today
+            );
+            document.getElementById('todayCount').textContent = todayProducts.length;
+            
+            // Unique lots
+            const uniqueLotes = [...new Set(products.map(p => p.lote))];
+            document.getElementById('lotesCount').textContent = uniqueLotes.length;
+        }
+
+        // Render products
+        function renderProducts(searchTerm = '') {
+            const productList = document.getElementById('productList');
+            
+            let filteredProducts = products;
+            if (searchTerm) {
+                filteredProducts = products.filter(p => 
+                    p.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    p.lote.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+            
+            if (filteredProducts.length === 0) {
+                productList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <div class="empty-title">${searchTerm ? 'Nenhum resultado encontrado' : 'Nenhum produto cadastrado'}</div>
+                        <div class="empty-subtitle">${searchTerm ? 'Tente buscar por outro termo' : 'Adicione seu primeiro produto acima'}</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort by date (newest first)
+            const sortedProducts = [...filteredProducts].sort((a, b) => b.id - a.id);
+            
+            productList.innerHTML = sortedProducts.map(product => `
+                <div class="product-item">
+                    <div class="product-info">
+                        <div class="product-name">${product.nome}</div>
+                        <div class="product-details">
+                            <span class="product-lote">📦 ${product.lote}</span>
+                            <span>📅 ${formatDate(product.dataCadastro)}</span>
+                        </div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteProduct(${product.id})">
+                        Excluir
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Delete product
+        function deleteProduct(id) {
+            vibrate(20);
+            
+            if (confirm('Deseja excluir este produto?')) {
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('chemicalProductsApp', JSON.stringify(products));
+                renderProducts();
+                updateStats();
+                showToast('🗑️ Produto excluído');
+                vibrate(10);
+            }
+        }
+
+        // Add product
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            vibrate();
+            
+            const product = {
+                id: productIdCounter++,
+                nome: document.getElementById('nome').value.trim(),
+                lote: document.getElementById('lote').value.trim().toUpperCase(),
+                dataCadastro: new Date().toISOString()
+            };
+            
+            products.unshift(product); // Add to beginning
+            localStorage.setItem('chemicalProductsApp', JSON.stringify(products));
+            
+            // Clear form
+            document.getElementById('productForm').reset();
+            
+            // Update UI
+            renderProducts();
+            updateStats();
+            
+            // Show success feedback
+            showToast('✅ Produto adicionado com sucesso!');
+            
+            // Visual feedback
+            document.getElementById('nome').style.borderColor = '#34C759';
+            document.getElementById('lote').style.borderColor = '#34C759';
+            setTimeout(() => {
+                document.getElementById('nome').style.borderColor = '#C6C6C8';
+                document.getElementById('lote').style.borderColor = '#C6C6C8';
+            }, 1000);
+            
+            // Focus back to first field
+            document.getElementById('nome').focus();
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            renderProducts(e.target.value);
+        });
+
+        // Prevent iOS bounce
+        document.addEventListener('touchmove', function(e) {
+            if (e.target === document.body) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProducts();
+            updateStats();
+            
+            // Adjust for iOS safe areas
+            if (CSS.supports('padding-top: env(safe-area-inset-top)')) {
+                document.querySelector('.app').style.paddingTop = 'env(safe-area-inset-top)';
+            }
+            
+            // Focus management for mobile
+            if (window.innerWidth <= 768) {
+                document.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('focus', () => {
+                        setTimeout(() => {
+                            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 300);
+                    });
+                });
+            }
+            
+            // Prevent zoom on double tap (iOS)
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(e) {
+                const now = Date.now();
+                if (now - lastTouchEnd <= 300) {
+                    e.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        });
+
+        // Install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            setTimeout(() => {
+                showToast('📱 Adicione este app à tela inicial!', 4000);
+            }, 2000);
+        });
+
+        // Handle app installed
+        window.addEventListener('appinstalled', () => {
+            showToast('✅ App instalado com sucesso!');
+        });
+
+        // Handle online/offline
+        window.addEventListener('online', () => showToast('🟢 Conectado'));
+        window.addEventListener('offline', () => showToast('🔴 Modo offline'));
+    </script>
+</body>
+</html>
